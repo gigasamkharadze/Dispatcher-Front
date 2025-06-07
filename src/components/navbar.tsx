@@ -11,7 +11,7 @@ export function Navbar() {
 
   const routes = [
     {
-      href: "/dispatcher",
+      href: "/bids",
       label: "Bids",
       icon: Package
     },
