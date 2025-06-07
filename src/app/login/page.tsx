@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { setAuthCookie } from "@/lib/auth";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,18 +20,30 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // TODO: Replace with actual API call
-      // For demo purposes, we'll accept any non-empty email/password
-      if (email && password) {
-        // Set authentication cookie
-        setAuthCookie("demo-token");
-        // Redirect to orders page
-        router.push("/orders");
-      } else {
-        setError("Please enter both email and password");
+      const response = await fetch(`${API_URL}/accounts/api/token/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Invalid credentials');
       }
+
+      // Set authentication cookie with the JWT token
+      setAuthCookie(data.access);
+      
+      // Store user data in localStorage if needed
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Redirect to orders page
+      router.push("/orders");
     } catch (err) {
-      setError("Invalid credentials");
+      setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
 
