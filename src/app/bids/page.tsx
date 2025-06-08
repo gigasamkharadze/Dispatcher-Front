@@ -52,6 +52,7 @@ export default function BidsPage() {
   const { toast, showToast, hideToast } = useToast()
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
     const fetchBids = async () => {
       try {
         const data = await api.getBids();
@@ -65,6 +66,8 @@ export default function BidsPage() {
     };
 
     fetchBids();
+    interval = setInterval(fetchBids, 10000); // Poll every 10 seconds
+    return () => clearInterval(interval);
   }, []);
 
   const handleAcceptBid = async (orderId: string, bidId: number) => {
