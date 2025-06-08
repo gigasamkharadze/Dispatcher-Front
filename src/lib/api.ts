@@ -84,10 +84,13 @@ export const api = {
       headers: getAuthHeader(),
       body: JSON.stringify({
         bid_id: bidId,
-        total_price: price,
+        total_price: Number(price),
       }),
     });
-    if (!response.ok) throw new Error('Failed to create order');
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Failed to create order: ${JSON.stringify(errorData)}`);
+    }
     return response.json();
   },
 }; 

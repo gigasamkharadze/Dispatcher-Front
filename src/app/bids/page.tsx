@@ -99,12 +99,13 @@ export default function BidsPage() {
     }
 
     try {
+      console.log('Creating order with:', { bidId, price });
       await api.createOrder(bidId.toString(), price);
       setBids(bids.filter(bid => bid.id !== bidId));
       showToast("Order created successfully", "success");
     } catch (error) {
+      console.error('Error creating order:', error);
       showToast("Failed to create order", "error");
-      console.error(error);
     }
   };
 
