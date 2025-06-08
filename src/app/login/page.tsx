@@ -37,6 +37,9 @@ export default function LoginPage() {
       // Set authentication cookie with the JWT token
       setAuthCookie(data.access);
       
+      // Store token in localStorage as well for API calls
+      localStorage.setItem('auth-token', data.access);
+      
       // Store user data in localStorage if needed
       localStorage.setItem('user', JSON.stringify(data.user));
       
