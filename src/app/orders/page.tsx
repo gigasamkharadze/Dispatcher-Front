@@ -177,91 +177,103 @@ export default function OrdersPage() {
       </div>
 
       <div className="grid gap-6">
-        {filteredOrders.map((order) => (
-          <Card 
-            key={order.id} 
-            className="cursor-pointer hover:shadow-lg transition-shadow px-8 py-6 border border-gray-200"
-            onClick={() => setSelectedOrder(order)}
-          >
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center gap-6 justify-between">
-                <div className="flex items-center gap-3">
-                  <Building2 className="h-6 w-6 text-muted-foreground" />
-                  <span className="font-semibold text-lg">{order.company.name}</span>
-                  <span className="text-sm text-muted-foreground ml-2">Order #{order.id}</span>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center">
-                  {order.bid && (
+        {filteredOrders.length === 0 ? (
+          <Card className="p-6">
+            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+              <Package className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Orders Available</h3>
+              <p className="text-muted-foreground">
+                There are currently no orders to display. Check back later for new orders.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredOrders.map((order) => (
+            <Card 
+              key={order.id} 
+              className="cursor-pointer hover:shadow-lg transition-shadow px-8 py-6 border border-gray-200"
+              onClick={() => setSelectedOrder(order)}
+            >
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap items-center gap-6 justify-between">
+                  <div className="flex items-center gap-3">
+                    <Building2 className="h-6 w-6 text-muted-foreground" />
+                    <span className="font-semibold text-lg">{order.company.name}</span>
+                    <span className="text-sm text-muted-foreground ml-2">Order #{order.id}</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center">
+                    {order.bid && (
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-5 w-5 text-muted-foreground" />
+                        <span className="text-sm font-semibold">Initial Price:</span>
+                        <span className="text-base ml-1">${order.bid.offered_price}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-5 w-5 text-muted-foreground" />
-                      <span className="text-sm font-semibold">Initial Price:</span>
-                      <span className="text-base ml-1">${order.bid.offered_price}</span>
+                      <span className="text-sm font-semibold">Total Price:</span>
+                      <span className="text-base ml-1">${order.total_price}</span>
                     </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-sm font-semibold">Total Price:</span>
-                    <span className="text-base ml-1">${order.total_price}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Status:</span>
-                    <span className="text-base font-medium ml-1">{statusLabels[order.status as keyof typeof statusLabels]}</span>
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Status:</span>
+                      <span className="text-base font-medium ml-1">{statusLabels[order.status as keyof typeof statusLabels]}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-wrap gap-8 mt-2">
-                {order.bid && (
-                  <>
-                    <div className="flex flex-col gap-1 min-w-[180px]">
-                      <div className="flex items-center gap-2">
-                        <User className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-sm font-semibold">Owner:</span>
-                        <span className="text-sm ml-1">{order.bid.owner.first_name} {order.bid.owner.last_name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <User className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-sm font-semibold">Driver:</span>
-                        <span className="text-sm ml-1">{order.bid.driver.first_name} {order.bid.driver.last_name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-sm font-semibold">Driver Phone:</span>
-                        <span className="text-sm ml-1">{order.bid.driver.phone_number}</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-1 flex-row gap-8 min-w-[400px]">
+                <div className="flex flex-wrap gap-8 mt-2">
+                  {order.bid && (
+                    <>
                       <div className="flex flex-col gap-1 min-w-[180px]">
                         <div className="flex items-center gap-2">
-                          <MapPin className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-sm font-semibold">Pickup:</span>
-                          <span className="text-sm ml-1">{order.bid.pickup_location}</span>
+                          <User className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-sm font-semibold">Owner:</span>
+                          <span className="text-sm ml-1">{order.bid.owner.first_name} {order.bid.owner.last_name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-sm font-semibold">Pickup Date:</span>
-                          <span className="text-sm ml-1">{new Date(order.bid.pickup_date).toLocaleDateString()}</span>
+                          <User className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-sm font-semibold">Driver:</span>
+                          <span className="text-sm ml-1">{order.bid.driver.first_name} {order.bid.driver.last_name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-sm font-semibold">Driver Phone:</span>
+                          <span className="text-sm ml-1">{order.bid.driver.phone_number}</span>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-1 min-w-[180px]">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-sm font-semibold">Delivery:</span>
-                          <span className="text-sm ml-1">{order.bid.delivery_location}</span>
+                      <div className="flex flex-1 flex-row gap-8 min-w-[400px]">
+                        <div className="flex flex-col gap-1 min-w-[180px]">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-semibold">Pickup:</span>
+                            <span className="text-sm ml-1">{order.bid.pickup_location}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-semibold">Pickup Date:</span>
+                            <span className="text-sm ml-1">{new Date(order.bid.pickup_date).toLocaleDateString()}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-sm font-semibold">Delivery Date:</span>
-                          <span className="text-sm ml-1">{new Date(order.bid.delivery_date).toLocaleDateString()}</span>
+                        <div className="flex flex-col gap-1 min-w-[180px]">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-semibold">Delivery:</span>
+                            <span className="text-sm ml-1">{order.bid.delivery_location}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm font-semibold">Delivery Date:</span>
+                            <span className="text-sm ml-1">{new Date(order.bid.delivery_date).toLocaleDateString()}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))
+        )}
       </div>
 
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
